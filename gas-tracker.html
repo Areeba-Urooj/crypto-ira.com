@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Real-time Ethereum gas fee tracker with current prices and transaction cost calculator">
+    <meta name="keywords" content="ethereum, gas fees, transaction costs, blockchain">
+    <title>Crypto Tracker - Ethereum Gas Fees</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .gas-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .gas-card:hover {
+            transform: translateY(-5px);
+        }
+        .gas-level-card {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .gas-level-card.standard {
+            background: linear-gradient(45deg, #ffc107, #fd7e14);
+        }
+        .gas-level-card.fast {
+            background: linear-gradient(45deg, #dc3545, #e83e8c);
+        }
+        .gas-level-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .calculator-card {
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            color: white;
+        }
+        .history-chart {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .status-low { background-color: #28a745; }
+        .status-medium { background-color: #ffc107; }
+        .status-high { background-color: #dc3545; }
+        .gwei-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .transaction-type {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 0.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-currency-bitcoin"></i> Crypto Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cryptocurrencies.html">
+                            <i class="bi bi-currency-exchange"></i> Cryptocurrencies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="gas-fees.html">
+                            <i class="bi bi-fuel-pump"></i> Gas Fees
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">
+                            <i class="bi bi-journal-text"></i> Blog
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container my-5">
+        <div class="row text-center text-white mb-5">
+            <div class="col-12">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="bi bi-fuel-pump"></i> Ethereum Gas Tracker
+                </h1>
+                <p class="lead">Real-time gas prices and transaction cost calculator</p>
+                <button id="refreshBtn" class="btn btn-light btn-lg shadow">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Gas Prices -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12 mb-4">
+                <h2 class="text-white text-center mb-4">
+                    <i class="bi bi-speedometer2"></i> Current Gas Prices
+                </h2>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="gas-level-card">
+                    <i class="bi bi-speedometer fs-1 mb-3"></i>
+                    <h3>Slow</h3>
+                    <div class="gwei-display" id="slowGas">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p class="mb-2">Gwei</p>
+                    <div class="transaction-type">
+                        <small><i class="bi bi-clock"></i> ~5-10 minutes</small><br>
+                        <small><i class="bi bi-cash"></i> Lowest cost option</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="gas-level-card standard">
+                    <i class="bi bi-speedometer2 fs-1 mb-3"></i>
+                    <h3>Standard</h3>
+                    <div class="gwei-display" id="standardGas">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p class="mb-2">Gwei</p>
+                    <div class="transaction-type">
+                        <small><i class="bi bi-clock"></i> ~2-5 minutes</small><br>
+                        <small><i class="bi bi-balance"></i> Balanced speed & cost</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="gas-level-card fast">
+                    <i class="bi bi-lightning fs-1 mb-3"></i>
+                    <h3>Fast</h3>
+                    <div class="gwei-display" id="fastGas">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p class="mb-2">Gwei</p>
+                    <div class="transaction-type">
+                        <small><i class="bi bi-clock"></i> ~30 seconds</small><br>
+                        <small><i class="bi bi-lightning"></i> Fastest confirmation</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Network Status -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="gas-card p-4 text-center">
+                    <h3 class="mb-4">
+                        <i class="bi bi-activity"></i> Network Status
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <span class="status-indicator" id="networkStatus"></span>
+                                <strong id="networkStatusText">Loading...</strong>
+                                <p class="small text-muted mt-2">Network Congestion</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <h4 id="avgBlockTime">--</h4>
+                                <p class="small text-muted">Avg Block Time</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="p-3">
+                                <h4 id="pendingTxs">--</h4>
+                                <p class="small text-muted">Pending Transactions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gas Calculator -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="gas-card calculator-card p-4">
+                    <h3 class="text-center mb-4">
+                        <i class="bi bi-calculator"></i> Transaction Cost Calculator
+                    </h3>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label text-white">Transaction Type</label>
+                                <select class="form-select" id="transactionType">
+                                    <option value="21000">Simple Transfer</option>
+                                    <option value="65000">Token Transfer (ERC-20)</option>
+                                    <option value="150000">Uniswap Swap</option>
+                                    <option value="300000">Complex DeFi Transaction</option>
+                                    <option value="custom">Custom Gas Limit</option>
+                                </select>
+                            </div>
+                            <div class="mb-3" id="customGasDiv" style="display: none;">
+                                <label class="form-label text-white">Custom Gas Limit</label>
+                                <input type="number" class="form-control" id="customGasLimit" placeholder="Enter gas limit">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label text-white">Gas Price Level</label>
+                                <select class="form-select" id="gasPriceLevel">
+                                    <option value="slow">Slow (Cheapest)</option>
+                                    <option value="standard" selected>Standard</option>
+                                    <option value="fast">Fast (Most Expensive)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-center p-4" style="background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
+                                <h4 class="text-white mb-3">Estimated Cost</h4>
+                                <div class="h2 text-warning mb-2" id="calculatedCostETH">0.000 ETH</div>
+                                <div class="h5 text-light" id="calculatedCostUSD">$0.00 USD</div>
+                                <hr class="text-white">
+                                <div class="small text-light">
+                                    <div>Gas Limit: <span id="displayGasLimit">21,000</span></div>
+                                    <div>Gas Price: <span id="displayGasPrice">-- Gwei</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common Transaction Costs -->
+    <div class="container my-5">
+        <div class="gas-card p-4">
+            <h3 class="text-center mb-4">
+                <i class="bi bi-list-check"></i> Common Transaction Costs
+            </h3>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="bi bi-gear"></i> Transaction Type</th>
+                            <th><i class="bi bi-fuel-pump"></i> Gas Limit</th>
+                            <th><i class="bi bi-cash"></i> Slow Cost</th>
+                            <th><i class="bi bi-cash-stack"></i> Standard Cost</th>
+                            <th><i class="bi bi-lightning"></i> Fast Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionCostsTable">
+                        <tr>
+                            <td colspan="5" class="text-center py-4">
+                                <div class="loading-spinner"></div>
+                                <span class="ms-2">Loading transaction costs...</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gas History Chart -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <div class="history-chart text-white">
+                    <h3 class="text-center mb-4">
+                        <i class="bi bi-graph-up"></i> Gas Price History (24 Hours)
+                    </h3>
+                    <div class="text-center" id="chartContainer">
+                        <canvas id="gasHistoryChart" width="800" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                © 2024 Crypto Tracker | Gas data updates every 30 seconds
+                <span class="ms-3">
+                    <i class="bi bi-clock"></i> Last updated: <span id="lastUpdate">Never</span>
+                </span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <script>
+        // Global variables
+        let gasData = {
+            slow: 0,
+            standard: 0,
+            fast: 0
+        };
+        let ethPrice = 2000; // Default ETH price in USD
+        let gasHistoryChart;
+
+        // Mock gas price data (replace with real API if available)
+        function generateMockGasData() {
+            const baseGas = Math.floor(Math.random() * 20) + 15; // 15-35 Gwei base
+            return {
+                slow: baseGas,
+                standard: baseGas + Math.floor(Math.random() * 10) + 5,
+                fast: baseGas + Math.floor(Math.random() * 20) + 15,
+                blockTime: (Math.random() * 2 + 12).toFixed(1), // 12-14 seconds
+                pendingTxs: Math.floor(Math.random() * 50000) + 100000 // 100k-150k
+            };
+        }
+
+        // Fetch current gas prices
+        async function fetchGasPrices() {
+            try {
+                // Using mock data - replace with real Etherscan API
+                const mockData = generateMockGasData();
+                
+                gasData.slow = mockData.slow;
+                gasData.standard = mockData.standard;
+                gasData.fast = mockData.fast;
+
+                // Update gas price displays
+                document.getElementById('slowGas').textContent = gasData.slow;
+                document.getElementById('standardGas').textContent = gasData.standard;
+                document.getElementById('fastGas').textContent = gasData.fast;
+
+                // Update network status
+                updateNetworkStatus(mockData);
+                
+                // Update transaction costs table
+                updateTransactionCostsTable();
+                
+                // Update calculator
+                calculateTransactionCost();
+                
+                updateLastUpdateTime();
+                
+            } catch (error) {
+                console.error("Gas prices error:", error);
+                handleApiError();
+            }
+        }
+
+        // Update network status
+        function updateNetworkStatus(data) {
+            const avgGas = (gasData.slow + gasData.standard + gasData.fast) / 3;
+            const statusIndicator = document.getElementById('networkStatus');
+            const statusText = document.getElementById('networkStatusText');
+            
+            if (avgGas < 25) {
+                statusIndicator.className = 'status-indicator status-low';
+                statusText.textContent = 'Low Congestion';
+            } else if (avgGas < 50) {
+                statusIndicator.className = 'status-indicator status-medium';
+                statusText.textContent = 'Medium Congestion';
+            } else {
+                statusIndicator.className = 'status-indicator status-high';
+                statusText.textContent = 'High Congestion';
+            }
+
+            document.getElementById('avgBlockTime').textContent = data.blockTime + 's';
+            document.getElementById('pendingTxs').textContent = data.pendingTxs.toLocaleString();
+        }
+
+        // Update transaction costs table
+        function updateTransactionCostsTable() {
+            const transactions = [
+                { name: 'Simple ETH Transfer', gasLimit: 21000 },
+                { name: 'ERC-20 Token Transfer', gasLimit: 65000 },
+                { name: 'Uniswap V2 Swap', gasLimit: 150000 },
+                { name: 'Uniswap V3 Swap', gasLimit: 180000 },
+                { name: 'OpenSea NFT Purchase', gasLimit: 200000 },
+                { name: 'Compound Lending', gasLimit: 250000 },
+                { name: 'Aave Deposit', gasLimit: 300000 },
+                { name: 'Complex DeFi Transaction', gasLimit: 500000 }
+            ];
+
+            let tableHtml = '';
+            transactions.forEach(tx => {
+                const slowCost = (tx.gasLimit * gasData.slow / 1e9).toFixed(4);
+                const standardCost = (tx.gasLimit * gasData.standard / 1e9).toFixed(4);
+                const fastCost = (tx.gasLimit * gasData.fast / 1e9).toFixed(4);
+
+                const slowUSD = (slowCost * ethPrice).toFixed(2);
+                const standardUSD = (standardCost * ethPrice).toFixed(2);
+                const fastUSD = (fastCost * ethPrice).toFixed(2);
+
+                tableHtml += `
+                    <tr>
+                        <td><strong>${tx.name}</strong></td>
+                        <td>${tx.gasLimit.toLocaleString()}</td>
+                        <td>
+                            <strong>${slowCost} ETH</strong><br>
+                            <small class="text-muted">$${slowUSD}</small>
+                        </td>
+                        <td>
+                            <strong>${standardCost} ETH</strong><br>
+                            <small class="text-muted">$${standardUSD}</small>
+                        </td>
+                        <td>
+                            <strong>${fastCost} ETH</strong><br>
+                            <small class="text-muted">$${fastUSD}</small>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('transactionCostsTable').innerHTML = tableHtml;
+        }
+
+        // Calculate transaction cost
+        function calculateTransactionCost() {
+            const transactionType = document.getElementById('transactionType').value;
+            const gasPriceLevel = document.getElementById('gasPriceLevel').value;
+            
+            let gasLimit;
+            if (transactionType === 'custom') {
+                gasLimit = parseInt(document.getElementById('customGasLimit').value) || 21000;
+            } else {
+                gasLimit = parseInt(transactionType);
+            }
+
+            const gasPrice = gasData[gasPriceLevel] || gasData.standard;
+            const costETH = (gasLimit * gasPrice / 1e9);
+            const costUSD = costETH * ethPrice;
+
+            document.getElementById('calculatedCostETH').textContent = costETH.toFixed(6) + ' ETH';
+            document.getElementById('calculatedCostUSD').textContent = '$' + costUSD.toFixed(2) + ' USD';
+            document.getElementById('displayGasLimit').textContent = gasLimit.toLocaleString();
+            document.getElementById('displayGasPrice').textContent = gasPrice + ' Gwei';
+        }
+
+        // Create gas history chart
+        function createGasHistoryChart() {
+            const ctx = document.getElementById('gasHistoryChart').getContext('2d');
+            
+            // Generate mock historical data for 24 hours
+            const labels = [];
+            const slowData = [];
+            const standardData = [];
+            const fastData = [];
+            
+            for (let i = 23; i >= 0; i--) {
+                const hour = new Date();
+                hour.setHours(hour.getHours() - i);
+                labels.push(hour.getHours() + ':00');
+                
+                const baseGas = Math.floor(Math.random() * 15) + 20;
+                slowData.push(baseGas);
+                standardData.push(baseGas + Math.floor(Math.random() * 8) + 5);
+                fastData.push(baseGas + Math.floor(Math.random() * 15) + 12);
+            }
+
+            gasHistoryChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Slow',
+                            data: slowData,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Standard',
+                            data: standardData,
+                            borderColor: '#ffc107',
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Fast',
+                            data: fastData,
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            title: {
+                                display: true,
+                                text: 'Gas Price (Gwei)',
+                                color: 'white'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Handle API errors
+        function handleApiError() {
+            document.getElementById('slowGas').innerHTML = '<span class="text-danger">Error</span>';
+            document.getElementById('standardGas').innerHTML = '<span class="text-danger">Error</span>';
+            document.getElementById('fastGas').innerHTML = '<span class="text-danger">Error</span>';
+        }
+
+        // Update last update time
+        function updateLastUpdateTime() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleTimeString();
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchGasPrices();
+            createGasHistoryChart();
+            
+            // Transaction type change
+            document.getElementById('transactionType').addEventListener('change', function() {
+                const customDiv = document.getElementById('customGasDiv');
+                if (this.value === 'custom') {
+                    customDiv.style.display = 'block';
+                } else {
+                    customDiv.style.display = 'none';
+                }
+                calculateTransactionCost();
+            });
+
+            // Gas price level change
+            document.getElementById('gasPriceLevel').addEventListener('change', calculateTransactionCost);
+            
+            // Custom gas limit change
+            document.getElementById('customGasLimit').addEventListener('input', calculateTransactionCost);
+            
+            // Refresh button
+            document.getElementById('refreshBtn').addEventListener('click', fetchGasPrices);
+            
+            // Auto-refresh every 30 seconds
+            setInterval(fetchGasPrices, 30000);
+        });
+    </script>
+</body>
+</html>

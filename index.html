@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Real-time cryptocurrency prices and Ethereum gas fee tracker">
+    <meta name="keywords" content="crypto, bitcoin, ethereum, gas fees">
+    <title>Crypto Tracker - Home</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+        .feature-card .card-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            padding: 2.5rem;
+        }
+        .feature-icon {
+            font-size: 4rem;
+            background: linear-gradient(45deg, #007bff, #0056b3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .stats-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .quick-stats {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-currency-bitcoin"></i> Crypto Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cryptocurrencies.html">
+                            <i class="bi bi-currency-exchange"></i> Cryptocurrencies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gas-tracker.html">
+                            <i class="bi bi-fuel-pump"></i> Gas Tracker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="blog.html">
+                            <i class="bi bi-journal-text"></i> Blog
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-graph-up-arrow"></i> Live Cryptocurrency Hub
+            </h1>
+            <p class="lead mb-4">
+                Your one-stop destination for real-time crypto prices, gas fees, and market insights
+            </p>
+            <div class="row text-center mt-4">
+                <div class="col-md-4">
+                    <i class="bi bi-lightning-charge fs-1 mb-2"></i>
+                    <h5>Real-Time Data</h5>
+                    <p class="small">Live market updates</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-shield-check fs-1 mb-2"></i>
+                    <h5>Reliable Sources</h5>
+                    <p class="small">Trusted API providers</p>
+                </div>
+                <div class="col-md-4">
+                    <i class="bi bi-phone fs-1 mb-2"></i>
+                    <h5>Mobile Friendly</h5>
+                    <p class="small">Access anywhere</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="container my-5">
+        <div class="quick-stats">
+            <div class="row text-center">
+                <div class="col-md-4">
+                    <h3 id="totalMarketCap">Loading...</h3>
+                    <p class="mb-0">Total Market Cap</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 id="totalVolume">Loading...</h3>
+                    <p class="mb-0">24h Volume</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 id="activeCryptos">10,000+</h3>
+                    <p class="mb-0">Active Cryptocurrencies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Cards -->
+    <div class="container my-5">
+        <div class="row g-4">
+            <!-- Cryptocurrencies Card -->
+            <div class="col-md-6">
+                <div class="feature-card" onclick="window.location.href='cryptocurrencies.html'">
+                    <div class="card-body">
+                        <i class="bi bi-currency-exchange feature-icon"></i>
+                        <h3 class="card-title mb-3">Top Cryptocurrencies</h3>
+                        <p class="card-text text-muted mb-4">
+                            Track the performance of top cryptocurrencies with real-time prices, 
+                            market cap, and 24-hour changes. Get comprehensive market data at your fingertips.
+                        </p>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="bi bi-graph-up text-success fs-4"></i>
+                                <p class="small mt-1">Price Tracking</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-bar-chart text-primary fs-4"></i>
+                                <p class="small mt-1">Market Data</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-arrow-clockwise text-info fs-4"></i>
+                                <p class="small mt-1">Live Updates</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg mt-3">
+                            <i class="bi bi-arrow-right"></i> View Cryptocurrencies
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gas Tracker Card -->
+            <div class="col-md-6">
+                <div class="feature-card" onclick="window.location.href='gas-tracker.html'">
+                    <div class="card-body">
+                        <i class="bi bi-fuel-pump feature-icon"></i>
+                        <h3 class="card-title mb-3">Ethereum Gas Tracker</h3>
+                        <p class="card-text text-muted mb-4">
+                            Monitor Ethereum gas prices in real-time to optimize your transaction costs. 
+                            Get slow, standard, and fast gas price recommendations.
+                        </p>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <i class="bi bi-speedometer text-warning fs-4"></i>
+                                <p class="small mt-1">Speed Options</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-cash-stack text-success fs-4"></i>
+                                <p class="small mt-1">Cost Optimization</p>
+                            </div>
+                            <div class="col-4">
+                                <i class="bi bi-clock text-primary fs-4"></i>
+                                <p class="small mt-1">Time Estimates</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary btn-lg mt-3">
+                            <i class="bi bi-arrow-right"></i> View Gas Tracker
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Updates -->
+    <div class="container my-5">
+        <div class="stats-card p-4">
+            <h3 class="text-center mb-4">
+                <i class="bi bi-clock-history"></i> Recent Market Activity
+            </h3>
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <div class="p-3">
+                        <i class="bi bi-bitcoin text-warning fs-2"></i>
+                        <h5 class="mt-2">Bitcoin</h5>
+                        <p id="btcPrice" class="mb-0 fw-bold">Loading...</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3">
+                        <i class="bi bi-ethereum text-primary fs-2"></i>
+                        <h5 class="mt-2">Ethereum</h5>
+                        <p id="ethPrice" class="mb-0 fw-bold">Loading...</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3">
+                        <i class="bi bi-fuel-pump text-info fs-2"></i>
+                        <h5 class="mt-2">Gas Price</h5>
+                        <p id="gasPrice" class="mb-0 fw-bold">Loading...</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="p-3">
+                        <i class="bi bi-clock text-success fs-2"></i>
+                        <h5 class="mt-2">Last Updated</h5>
+                        <p id="lastUpdate" class="mb-0 fw-bold">Never</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <div class="container">
+            <p class="mb-0">
+                © 2024 Crypto Tracker | Powered by CoinGecko API
+                <span class="ms-3">
+                    <a href="cryptocurrencies.html" class="text-white-50 text-decoration-none">Cryptocurrencies</a> |
+                    <a href="gas-tracker.html" class="text-white-50 text-decoration-none">Gas Tracker</a> |
+                    <a href="blog.html" class="text-white-50 text-decoration-none">Blog</a>
+                </span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Axios for API calls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    
+    <script>
+        // Load quick stats and preview data
+        async function loadPreviewData() {
+            try {
+                // Fetch basic crypto data for preview
+                const response = await axios.get(
+                    'https://api.coingecko.com/api/v3/coins/markets', {
+                        params: {
+                            vs_currency: 'usd',
+                            order: 'market_cap_desc',
+                            per_page: 5,
+                            page: 1,
+                            sparkline: false
+                        },
+                        timeout: 10000
+                    }
+                );
+
+                if (response.data && response.data.length > 0) {
+                    // Update Bitcoin price
+                    const bitcoin = response.data.find(coin => coin.id === 'bitcoin');
+                    if (bitcoin) {
+                        document.getElementById('btcPrice').textContent = `$${bitcoin.current_price.toLocaleString()}`;
+                    }
+
+                    // Update Ethereum price
+                    const ethereum = response.data.find(coin => coin.id === 'ethereum');
+                    if (ethereum) {
+                        document.getElementById('ethPrice').textContent = `$${ethereum.current_price.toLocaleString()}`;
+                    }
+
+                    // Calculate total market cap and volume
+                    let totalMarketCap = 0;
+                    let totalVolume = 0;
+                    response.data.forEach(coin => {
+                        totalMarketCap += coin.market_cap || 0;
+                        totalVolume += coin.total_volume || 0;
+                    });
+
+                    document.getElementById('totalMarketCap').textContent = `$${(totalMarketCap / 1e12).toFixed(2)}T`;
+                    document.getElementById('totalVolume').textContent = `$${(totalVolume / 1e9).toFixed(1)}B`;
+                }
+
+                // Mock gas price
+                const mockGasPrice = Math.floor(Math.random() * 20) + 25;
+                document.getElementById('gasPrice').textContent = `${mockGasPrice} Gwei`;
+
+                // Update timestamp
+                document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+
+            } catch (error) {
+                console.error("Preview data error:", error);
+                // Show fallback data
+                document.getElementById('btcPrice').textContent = 'Unavailable';
+                document.getElementById('ethPrice').textContent = 'Unavailable';
+                document.getElementById('gasPrice').textContent = 'Unavailable';
+                document.getElementById('totalMarketCap').textContent = '$2.5T';
+                document.getElementById('totalVolume').textContent = '$85B';
+            }
+        }
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPreviewData();
+            
+            // Refresh data every 2 minutes
+            setInterval(loadPreviewData, 120000);
+        });
+    </script>
+</body>
+</html>

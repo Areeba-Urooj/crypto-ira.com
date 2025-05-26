@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cryptocurrency blog with insights, tutorials, and market analysis">
+    <meta name="keywords" content="crypto, bitcoin, ethereum, blockchain, tutorials, market analysis">
+    <title>Crypto Tracker - Blog</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            --success-gradient: linear-gradient(45deg, #56ab2f, #a8e6cf);
+            --warning-gradient: linear-gradient(45deg, #f093fb, #f5576c);
+        }
+
+        body {
+            background: var(--primary-gradient);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(13, 27, 42, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            color: white;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .blog-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.95));
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .category-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .badge-featured { background: var(--primary-gradient); }
+        .badge-security { background: var(--success-gradient); }
+        .badge-trading { background: var(--secondary-gradient); }
+        .badge-tutorial { background: var(--warning-gradient); }
+        .badge-news { background: linear-gradient(45deg, #667eea, #764ba2); }
+        .badge-technology { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+        .badge-nft { background: linear-gradient(45deg, #fa709a, #fee140); }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .author-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .reading-time {
+            color: #6c757d;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .btn-crypto {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-crypto:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        .btn-outline-crypto {
+            border: 2px solid #667eea;
+            color: #667eea;
+            background: transparent;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-crypto:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .newsletter-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .social-links a {
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .social-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-icon:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .article-preview {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pagination-custom .page-link {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            margin: 0 0.2rem;
+            border-radius: 10px;
+        }
+
+        .pagination-custom .page-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+        }
+
+        .filter-tabs {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-tab {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            margin: 0.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .filter-tab.active, .filter-tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-currency-bitcoin me-2"></i>Crypto Tracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">
+                            <i class="bi bi-house me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="cryptocurrencies.html">
+                            <i class="bi bi-currency-bitcoin me-1"></i>Cryptocurrencies
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="gas-tracker.html">
+                            <i class="bi bi-fuel-pump me-1"></i>Gas Tracker
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="blog.html">
+                            <i class="bi bi-journal-text me-1"></i>Blog
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container" style="margin-top: 100px;">
+        <div class="hero-section">
+            <h1 class="display-4 fw-bold mb-3">
+                <i class="bi bi-book me-3"></i>Crypto Knowledge Hub
+            </h1>
+            <p class="lead mb-4">
+                Stay informed with the latest cryptocurrency insights, tutorials, and market analysis from our expert team
+            </p>
+            <div class="row text-center mt-5">
+                <div class="col-md-4 mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-lightbulb fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold">Educational Content</h5>
+                    <p class="small opacity-75">Learn crypto fundamentals and advanced concepts</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-graph-up fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold">Market Analysis</h5>
+                    <p class="small opacity-75">Expert insights and market predictions</p>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="feature-icon">
+                        <i class="bi bi-newspaper fs-1"></i>
+                    </div>
+                    <h5 class="fw-bold">Latest News</h5>
+                    <p class="small opacity-75">Stay updated with crypto developments</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="container">
+        <div class="filter-tabs text-center">
+            <button class="btn filter-tab active" data-filter="all">All Articles</button>
+            <button class="btn filter-tab" data-filter="tutorial">Tutorials</button>
+            <button class="btn filter-tab" data-filter="security">Security</button>
+            <button class="btn filter-tab" data-filter="trading">Trading</button>
+            <button class="btn filter-tab" data-filter="news">News</button>
+            <button class="btn filter-tab" data-filter="technology">Technology</button>
+        </div>
+    </div>
+
+    <!-- Blog Content -->
+    <div class="container my-5">
+        <div class="row">
+            <!-- Featured Article -->
+            <div class="col-12 mb-5">
+                <div class="blog-card featured-card p-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <span class="category-badge badge-featured mb-3">
+                                <i class="bi bi-star-fill"></i>Featured Article
+                            </span>
+                            <h2 class="mb-3 fw-bold">Understanding Ethereum Gas Fees: Complete Guide 2024</h2>
+                            <p class="text-muted mb-4 article-preview">
+                                Gas fees are one of the most important concepts to understand when using Ethereum. 
+                                Learn how they work, why they fluctuate, and discover advanced strategies to optimize 
+                                your transactions and save money on every interaction with the Ethereum network.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                                <div class="author-info mb-2">
+                                    <div class="author-avatar">CT</div>
+                                    <div>
+                                        <strong>Crypto Team</strong>
+                                        <div class="reading-time">
+                                            <i class="bi bi-clock"></i>8 min read • Dec 15, 2024
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-crypto">
+                                    <i class="bi bi-book-open me-2"></i>Read Full Article
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light rounded-4 p-4 text-center h-100 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-fuel-pump" style="font-size: 5rem; color: var(--primary-color, #667eea);"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Posts Grid -->
+            <div class="col-lg-6 col-md-12 mb-4" data-category="security">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-security mb-3">
+                        <i class="bi bi-shield-check"></i>Security
+                    </span>
+                    <h4 class="mb-3 fw-bold">Crypto Wallet Security: Ultimate Protection Guide</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Protect your digital assets with comprehensive security measures. Learn about hardware wallets, 
+                        multi-signature setups, and advanced protection strategies.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">JS</div>
+                            <div>
+                                <strong>John Security</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>6 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 mb-4" data-category="trading">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-trading mb-3">
+                        <i class="bi bi-graph-up-arrow"></i>Trading
+                    </span>
+                    <h4 class="mb-3 fw-bold">DeFi Yield Farming: Advanced Strategies</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Explore sophisticated yield farming strategies and learn how to maximize your DeFi returns 
+                        while managing risks in volatile markets.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">MD</div>
+                            <div>
+                                <strong>Maria DeFi</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>10 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 mb-4" data-category="tutorial">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-tutorial mb-3">
+                        <i class="bi bi-mortarboard"></i>Tutorial
+                    </span>
+                    <h4 class="mb-3 fw-bold">Building Your First Crypto Portfolio</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Complete beginner's guide to creating a diversified cryptocurrency portfolio, 
+                        risk management strategies, and long-term investment planning.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">AB</div>
+                            <div>
+                                <strong>Alex Beginner</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>7 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 mb-4" data-category="news">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-news mb-3">
+                        <i class="bi bi-newspaper"></i>Market News
+                    </span>
+                    <h4 class="mb-3 fw-bold">Bitcoin ETF Impact: Market Analysis</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Comprehensive analysis of Bitcoin ETF approvals and their profound impact on 
+                        institutional adoption and market dynamics.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">RN</div>
+                            <div>
+                                <strong>Reporter News</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>5 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 mb-4" data-category="technology">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-technology mb-3">
+                        <i class="bi bi-cpu"></i>Technology
+                    </span>
+                    <h4 class="mb-3 fw-bold">Layer 2 Solutions: Scaling Ethereum Network</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Deep dive into Polygon, Arbitrum, and Optimism - comparing the leading Layer 2 
+                        solutions revolutionizing Ethereum scalability.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">DT</div>
+                            <div>
+                                <strong>Dev Tech</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>12 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-md-12 mb-4" data-category="trading">
+                <div class="blog-card p-4 h-100">
+                    <span class="category-badge badge-nft mb-3">
+                        <i class="bi bi-palette"></i>NFTs
+                    </span>
+                    <h4 class="mb-3 fw-bold">NFT Market Trends & Investment Strategies</h4>
+                    <p class="text-muted mb-4 article-preview">
+                        Current NFT market analysis, emerging trends, and strategic opportunities 
+                        for creators, collectors, and investors in 2024.
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="author-info">
+                            <div class="author-avatar">NA</div>
+                            <div>
+                                <strong>NFT Artist</strong>
+                                <div class="reading-time">
+                                    <i class="bi bi-clock"></i>9 min read
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline-crypto btn-sm">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="row mt-4">
+            <div class="col-12 d-flex justify-content-center">
+                <nav>
+                    <ul class="pagination pagination-custom">
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Newsletter Signup -->
+        <div class="row mt-5">
+            <div class="col-lg-8 offset-lg-2">
+                <div class="blog-card newsletter-card p-5 text-center">
+                    <div class="mb-4">
+                        <i class="bi bi-envelope-heart display-4 text-primary mb-3 d-block"></i>
+                        <h3 class="fw-bold mb-3">Stay Ahead of the Crypto Curve</h3>
+                        <p class="text-muted mb-4 lead">
+                            Get exclusive crypto insights, market analysis, and trading tips delivered to your inbox weekly. 
+                            Join 50,000+ crypto enthusiasts!
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-md-2">
+                            <div class="input-group input-group-lg mb-3">
+                                <input type="email" class="form-control" placeholder="Enter your email address" 
+                                       style="border-radius: 25px 0 0 25px; border: 2px solid #667eea;">
+                                <button class="btn btn-crypto" type="button" style="border-radius: 0 25px 25px 0;">
+                                    <i class="bi bi-send me-2"></i>Subscribe Now
+                                </button>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                We respect your privacy. Unsubscribe at any time.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-currency-bitcoin me-2"></i>Crypto Tracker
+                    </h5>
+                    <p class="text-muted">
+                        Your comprehensive source for cryptocurrency education, market insights, and expert analysis. 
+                        Stay informed, trade smart, invest wisely.
+                    </p>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h6 class="fw-bold mb-3">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2"><a href="index.html" class="text-muted text-decoration-none">Home</a></li>
+                        <li class="mb-2"><a href="cryptocurrencies.html" class="text-muted text-decoration-none">Cryptocurrencies</a></li>
+                        <li class="mb-2"><a href="gas-tracker.html" class="text-muted text-decoration-none">Gas Tracker</a></li>
+                        <li class="mb-2"><a href="blog.html" class="text-muted text-decoration-none">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <h6 class="fw-bold mb-3">Follow Us</h6>
+                    <div class="social-links mb-3">
+                        <a href="#" class="text-white me-3"><i class="bi bi-twitter fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-linkedin fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-telegram fs-4"></i></a>
+                        <a href="#" class="text-white me-3"><i class="bi bi-discord fs-4"></i></a>
+                        <a href="#" class="text-white"><i class="bi bi-youtube fs-4"></i></a>
+                    </div>
+                    <p class="text-muted small">
+                        Connect with our community for real-time updates and discussions.
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4 opacity-25">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-muted small mb-0">
+                        © 2024 Crypto Tracker. All rights reserved.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-muted small mb-0">
+                        <a href="#" class="text-muted text-decoration-none me-3">Privacy Policy</a>
+                        <a href="#" class="text-muted text-decoration-none">Terms of Service</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            const blogCards = document.querySelectorAll('[data-category]');
+
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+
+                    const filter = this.getAttribute('data-filter');
+
+                    blogCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.style.display = 'block';
+                            card.style.animation = 'fadeIn 0.5s ease-in';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Add fade-in animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Newsletter form handling
+            const subscribeBtn = document.querySelector('.btn-crypto');
+            const emailInput = document.querySelector('input[type="email"]');
+
+            subscribeBtn.addEventListener('click', function() {
+                const email = emailInput.value.trim();
+                if (email && isValidEmail(email)) {
+                    // Simulate subscription process
+                    this.innerHTML = '<i class="bi bi-check-circle me-2"></i>Subscribed!';
+                    this.classList.add('bg-success');
+                    emailInput.value = '';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="bi bi-send me-2"></i>Subscribe Now';
+                        this.classList.remove('bg-success');
+                    }, 3000);
+                } else {
+                    emailInput.classList.add('is-invalid');
+                    setTimeout(() => emailInput.classList.remove('is-invalid'), 3000);
+                }
+            });
+
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Add reading progress indicator
+            const progressBar = document.createElement('div');
+            progressBar.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 0%;
+                height: 3px;
+                background: linear-gradient(90deg, #667eea, #764ba2);
+                z-index: 9999;
+                transition: width 0.3s ease;
+            `;
+            document.body.appendChild(progressBar);
+
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+            });
+
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.blog-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Lazy loading for images (if any images are added later)
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        observer.unobserve(img);
+                    }
+                });
+            }, observerOptions);
+
+            // Search functionality (can be expanded later)
+            function addSearchFunctionality() {
+                const searchInput = document.createElement('input');
+                searchInput.type = 'text';
+                searchInput.placeholder = 'Search articles...';
+                searchInput.className = 'form-control mb-3';
+                searchInput.style.cssText = `
+                    border-radius: 25px;
+                    border: 2px solid rgba(255, 255, 255, 0.3);
+                    background: rgba(255, 255, 255, 0.1);
+                    color: white;
+                    backdrop-filter: blur(10px);
+                `;
+
+                const filterContainer = document.querySelector('.filter-tabs');
+                filterContainer.insertBefore(searchInput, filterContainer.firstChild);
+
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    const articles = document.querySelectorAll('.blog-card');
+                    
+                    articles.forEach(article => {
+                        const title = article.querySelector('h4, h2').textContent.toLowerCase();
+                        const content = article.querySelector('.article-preview').textContent.toLowerCase();
+                        
+                        if (title.includes(searchTerm) || content.includes(searchTerm)) {
+                            article.parentElement.style.display = 'block';
+                        } else {
+                            article.parentElement.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Initialize search functionality
+            addSearchFunctionality();
+
+            // Add loading animation for dynamic content
+            function showLoading() {
+                const loading = document.createElement('div');
+                loading.className = 'text-center my-5';
+                loading.innerHTML = `
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-3 text-white">Loading more articles...</p>
+                `;
+                return loading;
+            }
+
+            // Initialize tooltips if Bootstrap is available
+            if (typeof bootstrap !== 'undefined') {
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
+            }
+
+            // Add keyboard navigation support
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'k') {
+                    e.preventDefault();
+                    const searchInput = document.querySelector('input[placeholder="Search articles..."]');
+                    if (searchInput) {
+                        searchInput.focus();
+                    }
+                }
+            });
+
+            // Performance optimization: Debounce scroll events
+            function debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+
+            // Optimized scroll handler
+            const handleScroll = debounce(() => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + '%';
+            }, 10);
+
+            window.addEventListener('scroll', handleScroll);
+        });
+    </script>
+</body>
+</html>
